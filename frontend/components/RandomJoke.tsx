@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 export default function RandomJoke() {
   const [joke, setJoke] = useState<{ setup?: string; punchline?: string }>({});

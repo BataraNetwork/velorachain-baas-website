@@ -1,3 +1,4 @@
+import React from 'react';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 
@@ -8,19 +9,12 @@ interface ErrorBoundaryProps {
 
 // Initialize Sentry
 export function initSentry() {
+  if (!process.env.VITE_SENTRY_DSN) return;
+  
   Sentry.init({
     dsn: process.env.VITE_SENTRY_DSN,
     environment: process.env.NODE_ENV,
-    integrations: [
-      new BrowserTracing({
-        // Set sampling rate for performance monitoring
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-          React.useEffect,
-          window.location,
-          React.useNavigate
-        ),
-      }),
-    ],
+    integrations: [],
     
     // Performance monitoring
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
@@ -63,10 +57,10 @@ export function initSentry() {
   });
 }
 
-// Error boundary component
 export const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children, fallback }) => {
+  const FallbackComponent = fallback || DefaultErrorFallback;
   return (
-    <Sentry.ErrorBoundary fallback={fallback || DefaultErrorFallback}>
+    <Sentry.ErrorBoundary fallback={(props) => <FallbackComponent error={props.error as Error} resetError={props.resetError} />}>
       {children}
     </Sentry.ErrorBoundary>
   );
@@ -147,60 +141,49 @@ export const addBreadcrumb = (message: string, category?: string, data?: Record<
   });
 };
 
-// Performance monitoring utilities
-export const startTransaction = (name: string, op: string) => {
-  return Sentry.startTransaction({ name, op });
-};
-
-export const measurePerformance = async <T>(
+export const measurePerformance = async <T,>(
   name: string,
   operation: () => Promise<T>
 ): Promise<T> => {
-  const transaction = startTransaction(name, 'function');
-  
   try {
     const result = await operation();
-    transaction.setStatus('ok');
     return result;
   } catch (error) {
-    transaction.setStatus('internal_error');
+    captureError(error as Error, { operation: name });
     throw error;
-  } finally {
-    transaction.finish();
   }
 };
 
-// Web Vitals monitoring
 export const initWebVitals = () => {
-  import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-    getCLS(metric => Sentry.addBreadcrumb({
+  import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+    onCLS(metric => Sentry.addBreadcrumb({
       message: `CLS: ${metric.value}`,
       category: 'web-vital',
-      data: metric,
+      data: metric as any,
     }));
     
-    getFID(metric => Sentry.addBreadcrumb({
+    onFID(metric => Sentry.addBreadcrumb({
       message: `FID: ${metric.value}`,
       category: 'web-vital', 
-      data: metric,
+      data: metric as any,
     }));
     
-    getFCP(metric => Sentry.addBreadcrumb({
+    onFCP(metric => Sentry.addBreadcrumb({
       message: `FCP: ${metric.value}`,
       category: 'web-vital',
-      data: metric,
+      data: metric as any,
     }));
     
-    getLCP(metric => Sentry.addBreadcrumb({
+    onLCP(metric => Sentry.addBreadcrumb({
       message: `LCP: ${metric.value}`,
       category: 'web-vital',
-      data: metric,
+      data: metric as any,
     }));
     
-    getTTFB(metric => Sentry.addBreadcrumb({
+    onTTFB(metric => Sentry.addBreadcrumb({
       message: `TTFB: ${metric.value}`,
       category: 'web-vital',
-      data: metric,
+      data: metric as any,
     }));
   });
 };

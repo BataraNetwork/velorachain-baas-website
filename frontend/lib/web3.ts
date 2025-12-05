@@ -132,7 +132,7 @@ export class Web3Service {
     }
   }
 
-  async deployContract(abi: any[], bytecode: string, constructorArgs: any[] = []): Promise<ethers.Contract> {
+  async deployContract(abi: any[], bytecode: string, constructorArgs: any[] = []) {
     if (!this.signer) {
       throw new Error('Wallet not connected');
     }
