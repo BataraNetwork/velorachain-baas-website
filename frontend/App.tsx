@@ -27,6 +27,7 @@ import Dashboard from './pages/Dashboard';
 // Tools Pages
 import GasCalculatorPage from './pages/tools/GasCalculator';
 import ContractTemplatesPage from './pages/tools/ContractTemplates';
+import APIExplorer from './pages/APIExplorer';
 
 // Monitoring
 import { ErrorBoundary, initSentry, initWebVitals } from './lib/monitoring';
@@ -85,6 +86,7 @@ function AppInner() {
             {/* Tools */}
             <Route path="/tools/gas-calculator" element={<GasCalculatorPage />} />
             <Route path="/tools/contract-templates" element={<ContractTemplatesPage />} />
+            <Route path="/api-explorer" element={<APIExplorer />} />
             
             {/* Redirect old paths */}
             <Route path="/gas-calculator" element={<GasCalculatorPage />} />

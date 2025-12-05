@@ -29,6 +29,7 @@ export default function Navbar() {
       ]
     },
     { name: 'Docs', href: '/docs' },
+    { name: 'API Explorer', href: '/api-explorer' },
     { name: 'Blog', href: '/blog' },
     { name: 'Company', href: '/company' },
     { name: 'Contact', href: '/contact' }

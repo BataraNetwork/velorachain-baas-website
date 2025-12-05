@@ -1,0 +1,5 @@
+import { Service } from "encore.dev/service";
+
+export default new Service("docs");
+
+export { getOpenAPISpec } from "./openapi";
