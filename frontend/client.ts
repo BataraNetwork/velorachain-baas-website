@@ -33,8 +33,10 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
  * Client is an API client for the  Encore application.
  */
 export class Client {
+    public readonly alerts: alerts.ServiceClient
     public readonly contact: contact.ServiceClient
     public readonly docs: docs.ServiceClient
+    public readonly metrics: metrics.ServiceClient
     private readonly options: ClientOptions
     private readonly target: string
 
@@ -49,8 +51,10 @@ export class Client {
         this.target = target
         this.options = options ?? {}
         const base = new BaseClient(this.target, this.options)
+        this.alerts = new alerts.ServiceClient(base)
         this.contact = new contact.ServiceClient(base)
         this.docs = new docs.ServiceClient(base)
+        this.metrics = new metrics.ServiceClient(base)
     }
 
     /**
@@ -79,6 +83,29 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { checkUserAlerts as api_alerts_quota_alerts_checkUserAlerts } from "~backend/alerts/quota-alerts";
+
+export namespace alerts {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.checkUserAlerts = this.checkUserAlerts.bind(this)
+        }
+
+        public async checkUserAlerts(params: { userId: string }): Promise<ResponseType<typeof api_alerts_quota_alerts_checkUserAlerts>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/alerts/check/${encodeURIComponent(params.userId)}`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_alerts_quota_alerts_checkUserAlerts>
+        }
+    }
 }
 
 /**
@@ -131,6 +158,29 @@ export namespace docs {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/api/openapi.json`, {method: "GET", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_docs_openapi_getOpenAPISpec>
+        }
+    }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { getUsageMetrics as api_metrics_usage_getUsageMetrics } from "~backend/metrics/usage";
+
+export namespace metrics {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.getUsageMetrics = this.getUsageMetrics.bind(this)
+        }
+
+        public async getUsageMetrics(params: { userId: string }): Promise<ResponseType<typeof api_metrics_usage_getUsageMetrics>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/metrics/usage/${encodeURIComponent(params.userId)}`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_metrics_usage_getUsageMetrics>
         }
     }
 }

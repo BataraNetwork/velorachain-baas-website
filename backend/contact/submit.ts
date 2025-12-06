@@ -1,5 +1,7 @@
 import { api } from "encore.dev/api";
 import db from "../external_dbs/neondb/db";
+import { enforceRateLimit } from "../middleware/rate-limit";
+import { trackApiUsage } from "../metrics/usage";
 
 export interface ContactRequest {
   name: string;
@@ -19,6 +21,11 @@ export const submitContact = api(
   { method: "POST", path: "/contact", expose: true },
   async (req: ContactRequest): Promise<ContactResponse> => {
     try {
+      const userId = req.email;
+      const plan = "starter";
+      
+      await enforceRateLimit(userId, "submit_contact", plan);
+      await trackApiUsage(userId, "submit_contact", 0.01);
       // Validate required fields
       if (!req.name || !req.email || !req.message) {
         return {
