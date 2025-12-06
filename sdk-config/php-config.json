@@ -1,0 +1,9 @@
+{
+  "invokerPackage": "VeloraChain\\SDK",
+  "packageName": "velorachain-sdk",
+  "composerVendorName": "velorachain",
+  "composerProjectName": "sdk",
+  "artifactVersion": "1.0.0",
+  "hideGenerationTimestamp": true,
+  "variableNamingConvention": "camelCase"
+}

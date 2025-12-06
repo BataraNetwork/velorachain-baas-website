@@ -1,0 +1,10 @@
+{
+  "packageName": "velorachain",
+  "packageVersion": "1.0.0",
+  "hideGenerationTimestamp": true,
+  "enumClassPrefix": true,
+  "structPrefix": true,
+  "isGoSubmodule": true,
+  "gitUserId": "velorachain",
+  "gitRepoId": "velorachain-sdk-go"
+}

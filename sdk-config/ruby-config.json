@@ -1,0 +1,10 @@
+{
+  "gemName": "velorachain-sdk",
+  "moduleName": "VeloraChain",
+  "gemVersion": "1.0.0",
+  "gemAuthor": "VeloraChain Team",
+  "gemAuthorEmail": "sdk@velorachain.com",
+  "gemHomepage": "https://github.com/velorachain/velorachain-sdk-ruby",
+  "gemLicense": "MIT",
+  "hideGenerationTimestamp": true
+}

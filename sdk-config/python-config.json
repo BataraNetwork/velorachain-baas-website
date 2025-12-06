@@ -1,0 +1,9 @@
+{
+  "packageName": "velorachain",
+  "projectName": "velorachain-sdk",
+  "packageVersion": "1.0.0",
+  "packageUrl": "https://github.com/velorachain/velorachain-sdk-python",
+  "hideGenerationTimestamp": true,
+  "library": "urllib3",
+  "packageAuthor": "VeloraChain Team"
+}

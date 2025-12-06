@@ -1,0 +1,12 @@
+{
+  "groupId": "com.velorachain",
+  "artifactId": "velorachain-sdk",
+  "artifactVersion": "1.0.0",
+  "apiPackage": "com.velorachain.sdk.api",
+  "modelPackage": "com.velorachain.sdk.model",
+  "invokerPackage": "com.velorachain.sdk",
+  "hideGenerationTimestamp": true,
+  "dateLibrary": "java8",
+  "java8": true,
+  "library": "okhttp-gson"
+}

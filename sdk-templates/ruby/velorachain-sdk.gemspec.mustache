@@ -1,0 +1,24 @@
+Gem::Specification.new do |s|
+  s.name        = '{{gemName}}'
+  s.version     = '{{gemVersion}}'
+  s.platform    = Gem::Platform::RUBY
+  s.authors     = ['{{gemAuthor}}']
+  s.email       = ['{{gemAuthorEmail}}']
+  s.homepage    = '{{gemHomepage}}'
+  s.summary     = 'VeloraChain SDK'
+  s.description = '{{appDescription}}'
+  s.license     = '{{gemLicense}}'
+  s.required_ruby_version = '>= 2.7'
+
+  s.add_runtime_dependency 'typhoeus', '~> 1.4'
+  s.add_runtime_dependency 'json', '~> 2.6'
+
+  s.add_development_dependency 'rspec', '~> 3.12'
+  s.add_development_dependency 'rspec-mocks', '~> 3.12'
+  s.add_development_dependency 'rake', '~> 13.0'
+
+  s.files         = `find *`.split("\n").uniq.sort.select { |f| !f.empty? }
+  s.test_files    = `find spec/*`.split("\n")
+  s.executables   = []
+  s.require_paths = ["lib"]
+end
