@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [showApiKey, setShowApiKey] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Demo data
   const stats = [
@@ -392,8 +394,11 @@ export default function Dashboard() {
             <div className="space-y-6">
               {/* API Keys */}
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>API Keys</CardTitle>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/api-keys')}>
+                    Manage All Keys <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="p-4 bg-gray-50 rounded-lg">
@@ -423,6 +428,14 @@ export default function Dashboard() {
                       </Button>
                     </div>
                   </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => navigate('/api-keys')}
+                  >
+                    <Key className="w-4 h-4 mr-2" />
+                    Full API Key Management
+                  </Button>
                 </CardContent>
               </Card>
 

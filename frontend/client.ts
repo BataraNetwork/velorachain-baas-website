@@ -34,6 +34,7 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
  */
 export class Client {
     public readonly alerts: alerts.ServiceClient
+    public readonly apikeys: apikeys.ServiceClient
     public readonly contact: contact.ServiceClient
     public readonly docs: docs.ServiceClient
     public readonly metrics: metrics.ServiceClient
@@ -52,6 +53,7 @@ export class Client {
         this.options = options ?? {}
         const base = new BaseClient(this.target, this.options)
         this.alerts = new alerts.ServiceClient(base)
+        this.apikeys = new apikeys.ServiceClient(base)
         this.contact = new contact.ServiceClient(base)
         this.docs = new docs.ServiceClient(base)
         this.metrics = new metrics.ServiceClient(base)
@@ -104,6 +106,76 @@ export namespace alerts {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/alerts/check/${encodeURIComponent(params.userId)}`, {method: "GET", body: undefined})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_alerts_quota_alerts_checkUserAlerts>
+        }
+    }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { generate as api_apikeys_generate_generate } from "~backend/apikeys/generate";
+import { list as api_apikeys_list_list } from "~backend/apikeys/list";
+import { revoke as api_apikeys_revoke_revoke } from "~backend/apikeys/revoke";
+import { rotate as api_apikeys_rotate_rotate } from "~backend/apikeys/rotate";
+import {
+    recordUsage as api_apikeys_usage_recordUsage,
+    usage as api_apikeys_usage_usage
+} from "~backend/apikeys/usage";
+
+export namespace apikeys {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.generate = this.generate.bind(this)
+            this.list = this.list.bind(this)
+            this.recordUsage = this.recordUsage.bind(this)
+            this.revoke = this.revoke.bind(this)
+            this.rotate = this.rotate.bind(this)
+            this.usage = this.usage.bind(this)
+        }
+
+        public async generate(params: RequestType<typeof api_apikeys_generate_generate>): Promise<ResponseType<typeof api_apikeys_generate_generate>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/generate`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_generate_generate>
+        }
+
+        public async list(params: { user_id: string }): Promise<ResponseType<typeof api_apikeys_list_list>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/${encodeURIComponent(params.user_id)}`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_list_list>
+        }
+
+        public async recordUsage(params: RequestType<typeof api_apikeys_usage_recordUsage>): Promise<ResponseType<typeof api_apikeys_usage_recordUsage>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/usage/record`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_usage_recordUsage>
+        }
+
+        public async revoke(params: RequestType<typeof api_apikeys_revoke_revoke>): Promise<ResponseType<typeof api_apikeys_revoke_revoke>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/revoke`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_revoke_revoke>
+        }
+
+        public async rotate(params: RequestType<typeof api_apikeys_rotate_rotate>): Promise<ResponseType<typeof api_apikeys_rotate_rotate>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/rotate`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_rotate_rotate>
+        }
+
+        public async usage(params: RequestType<typeof api_apikeys_usage_usage>): Promise<ResponseType<typeof api_apikeys_usage_usage>> {
+            // Convert our params into the objects we need for the request
+            const query = makeRecord<string, string | string[]>({
+                days: params.days === undefined ? undefined : String(params.days),
+            })
+
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/api/keys/${encodeURIComponent(params.key_id)}/usage`, {query, method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_apikeys_usage_usage>
         }
     }
 }

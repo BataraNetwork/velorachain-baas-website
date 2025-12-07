@@ -29,6 +29,7 @@ import GasCalculatorPage from './pages/tools/GasCalculator';
 import ContractTemplatesPage from './pages/tools/ContractTemplates';
 import APIExplorer from './pages/APIExplorer';
 import SDKs from './pages/SDKs';
+import APIKeys from './pages/APIKeys';
 
 // Monitoring
 import { ErrorBoundary, initSentry, initWebVitals } from './lib/monitoring';
@@ -83,6 +84,7 @@ function AppInner() {
             <Route path="/company" element={<Company />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/api-keys" element={<APIKeys />} />
             
             {/* Tools */}
             <Route path="/tools/gas-calculator" element={<GasCalculatorPage />} />
